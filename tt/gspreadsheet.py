@@ -1,15 +1,43 @@
 """
 A wrapper around a wrapper to get Google spreadsheets look like DictReader
+
+
+Usage:
+------
+
+Get a spreadsheet if you know the key and worksheet:
+
+    sheet = GSpreadsheet(key='tuTazWC8sZ_r0cddKj8qfFg', worksheet="od6")
+
+Get a spreadsheet if you just know the url:
+
+    sheet = GSpreadsheet(url="https://docs.google.com/a/texastribune.org/spreadsheet/"
+                             "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
+
+Get a spreadsheet as a certain user:
+
+    sheet = GSpreadsheet(email="foo@example.com", password="12345",
+                         key='tuTazWC8sZ_r0cddKj8qfFg', worksheet="od6")
+
+    for row in sheet:
+        print row
+
+
+Future Plans/TODOs:
+-------------------
+Let you address by cells
+attach original metadata to each row/cell
+let you write back to the spreadsheet
 """
 import re
 
 from django.conf import settings
-
 from gdata.spreadsheet.service import SpreadsheetsService
 
 
 #http://code.google.com/apis/spreadsheets/data/1.0/developers_guide_python.html
 def PrintFeed(feed):
+  """Example function from Google to print a feed"""
   import gdata
   for i, entry in enumerate(feed.entry):
     if isinstance(feed, gdata.spreadsheet.SpreadsheetsCellsFeed):
@@ -27,7 +55,7 @@ def PrintFeed(feed):
       print '%s %s\n' % (i, entry.title.text)
 
 
-class Importer(object):
+class GSpreadsheet(object):
     email = None
     password = None
     key = None  # your spreadsheet key
@@ -85,9 +113,11 @@ class Importer(object):
 
     def __repr__(self):
         return "Google Spreadsheet: %s" % self.get_absolute_url()
+        # TODO grab spreadsheet and worksheet title
         self.sheet.feed.title.text
 
     def get_absolute_url(self):
+        # TODO there's a better way hidden in gdata
         return "https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=%s" % (self.key)
 
     def get_worksheets(self):
@@ -95,20 +125,15 @@ class Importer(object):
         return self.worksheets
 
     def __iter__(self):
-        return self.readrow()
+        return self.readrow_as_dict()
 
     # FIXME
     def next(self):
-        out = self.readrow().next()
+        out = self.readrow_as_dict().next()
         return out
 
-    def readrow(self):
+    def readrow_as_dict(self):
         for entry in self.feed.entry:
             row = dict([(key, entry.custom[key].text)
                         for key in entry.custom])
             yield row
-
-
-if __name__ == "__main__":
-    sheet = Importer(key='tuTazWC8sZ_r0cddKj8qfFg', worksheet="od6",
-        url="https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
