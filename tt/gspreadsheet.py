@@ -28,11 +28,16 @@ def PrintFeed(feed):
 
 
 class Importer(object):
+    email = None
+    password = None
     key = None  # your spreadsheet key
     worksheet = None    # your worksheet id
 
     def __init__(self, url=None, **kwargs):
         for key, value in kwargs.items():
+            # allow username as an alias to email
+            if key == "username":
+                key = "email"
             if hasattr(self, key) and key[0] != "_":
                 setattr(self, key, value)
             else:
@@ -52,10 +57,20 @@ class Importer(object):
 
     def connect(self):
         gd_client = SpreadsheetsService()
-        gd_client.email = settings.GOOGLE_DATA_ACCOUNT['username']
-        gd_client.password = settings.GOOGLE_DATA_ACCOUNT['password']
         gd_client.source = "texastribune-ttspreadimporter-1"
-        gd_client.ProgrammaticLogin()
+
+        # login
+        if hasattr(settings, 'GOOGLE_DATA_ACCOUNT'):
+            user_email = settings.GOOGLE_DATA_ACCOUNT['username']
+            user_password = settings.GOOGLE_DATA_ACCOUNT['password']
+            email = self.email or user_email
+            password = self.password or user_password
+        else:
+            email = self.email
+            password = self.password
+        if email and password:
+            gd_client.ClientLogin(email, password)
+
         self.client = gd_client
 
     def get_feed(self):
