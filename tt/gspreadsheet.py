@@ -28,7 +28,6 @@ def PrintFeed(feed):
 
 
 class Importer(object):
-    client = None
     key = None  # your spreadsheet key
     worksheet = None    # your worksheet id
 
@@ -69,28 +68,32 @@ class Importer(object):
             self.feed = self.client.GetListFeed(self.key, self.worksheet)
         return self.feed
 
+    def __repr__(self):
+        return "Google Spreadsheet: %s" % self.get_absolute_url()
+        self.sheet.feed.title.text
+
+    def get_absolute_url(self):
+        return "https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=%s" % (self.key)
+
     def get_worksheets(self):
         self.worksheets = self.client.GetWorksheetsFeed(self.key)
         return self.worksheets
 
-    @property
-    def readline(self):
+    def __iter__(self):
+        return self.readrow()
+
+    # FIXME
+    def next(self):
+        out = self.readrow().next()
+        return out
+
+    def readrow(self):
         for entry in self.feed.entry:
             row = dict([(key, entry.custom[key].text)
-                for key in entry.custom])
+                        for key in entry.custom])
             yield row
-
-    def close():
-        #TODO
-        pass
 
 
 if __name__ == "__main__":
-    #https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=
-    #    0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE
-    #CORPORATE_SPREADSHEET_KEY =
-    #    0Am5sCFhTpENwdGlZX1R5WGw4NVNrZXJhbDVtRlBCOVE
-    #https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=
-    #    0AqSs84LBQ21-dHVUYXpXQzhzWl9yMGNkZEtqOHFmRmc
     sheet = Importer(key='tuTazWC8sZ_r0cddKj8qfFg', worksheet="od6",
         url="https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
