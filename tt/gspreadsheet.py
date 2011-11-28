@@ -111,18 +111,33 @@ class GSpreadsheet(object):
             self.feed = self.client.GetListFeed(self.key, self.worksheet)
         return self.feed
 
+    def __unicode__(self):
+        if hasattr(self, 'spreadsheet_name'):
+            return u"GSpreadsheet: %s (%s)" % (self.spreadsheet_name,
+                                                     self.feed.title.text)
+        return u"GSpreadsheet: %s" % self.feed.title.text
+
+    def __str__(self):
+        return str(self.__unicode__())
+
     def __repr__(self):
-        return "Google Spreadsheet: %s" % self.get_absolute_url()
-        # TODO grab spreadsheet and worksheet title
-        self.sheet.feed.title.text
+        return self.__unicode__()
 
     def get_absolute_url(self):
         # TODO there's a better way hidden in gdata
         return "https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=%s" % (self.key)
 
     def get_worksheets(self):
-        self.worksheets = self.client.GetWorksheetsFeed(self.key)
-        return self.worksheets
+        # for debugging
+        worksheets = self.client.GetWorksheetsFeed(self.key)
+        self.spreadsheet_name = worksheets.title.text
+        self._worksheets = worksheets
+        return worksheets
+
+    def list_worksheets(self):
+        # for debugging
+        worksheets = self.get_worksheets()
+        return [(x.title.text, x.link[3].href.split('/')[-1]) for x in worksheets.entry]
 
     def __iter__(self):
         return self.readrow_as_dict()
