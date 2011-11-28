@@ -74,7 +74,8 @@ class GSpreadsheet(object):
 
         if url is not None:
             self.key = None
-            self.worksheet = None
+            # TODO parse worksheet from url, should not overwrite if none specified
+            #self.worksheet = None
             try:
                 self.key = re.search(r'key=([0-9a-zA-Z\-]+)',url).group(1)
             except (AttributeError, IndexError):
