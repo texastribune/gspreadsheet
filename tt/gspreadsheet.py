@@ -82,6 +82,10 @@ class GDataRow(DictMixin):
     def keys(self):
         return self._data.keys()
 
+    def copy(self):
+        """Get an ordinary dict of the row"""
+        return self._data.copy()
+
 
 class GSpreadsheet(object):
     email = None
