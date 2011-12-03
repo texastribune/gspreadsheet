@@ -138,9 +138,17 @@ class GSpreadsheet(object):
         return worksheets
 
     def list_worksheets(self):
+        """
+        List what worksheet keys exist
+
+        Returns a list of tuples of the form:
+            (WORKSHEET_ID, WORKSHEET_NAME)
+        You can then retrieve the specific WORKSHEET_ID in the future by
+        constructing a new GSpreadsheet(worksheet=WORKSHEET_ID, ...)
+        """
         # for debugging
         worksheets = self.get_worksheets()
-        return [(x.title.text, x.link[3].href.split('/')[-1]) for x in worksheets.entry]
+        return [(x.link[3].href.split('/')[-1], x.title.text) for x in worksheets.entry]
 
     def __iter__(self):
         return self.readrow_as_dict()
