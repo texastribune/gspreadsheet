@@ -68,8 +68,13 @@ class GDataRow(DictMixin):
     def __getitem__(self, *args):
         return self._data.__getitem__(*args)
 
-    def __setitem__(self, *args):
-        raise NotImplementedError("Changing Values Not Implemented")
+    def __setitem__(self, key, value):
+        global gd_client
+        if gd_client is None:
+            # TODO raise a better exception
+            raise Exception("Not Logged In")
+        self._data[key] = value
+        return gd_client.UpdateRow(self._entry, self._data)
 
     def __delitem__(self, *args):
         raise NameError("Deleting Values Not Allowed")
