@@ -36,6 +36,9 @@ from django.conf import settings
 from gdata.spreadsheet.service import SpreadsheetsService
 
 
+# cache client between uses
+gd_client = None
+
 #http://code.google.com/apis/spreadsheets/data/1.0/developers_guide_python.html
 def PrintFeed(feed):
   """Example function from Google to print a feed"""
@@ -105,6 +108,9 @@ class GSpreadsheet(object):
         self.get_feed()
 
     def connect(self):
+        global gd_client
+        if gd_client:
+            return
         gd_client = SpreadsheetsService()
         gd_client.source = "texastribune-ttspreadimporter-1"
 
