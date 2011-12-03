@@ -211,3 +211,13 @@ class GSpreadsheet(object):
         for entry in self.feed.entry:
             row = GDataRow(entry)
             yield row
+
+    def add_row(self, row_dict):
+        """Add a row to the spreadsheet, returns the new row"""
+        # TODO validate row_dict.keys() match
+        if self.worksheet:
+            entry = self.client.InsertRow(row_dict, self.key, self.worksheet)
+        else:
+            entry = self.client.InsertRow(row_dict, self.key)
+        self.feed.entry.append(entry)
+        return GDataRow(entry)
