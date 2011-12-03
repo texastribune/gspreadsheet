@@ -129,6 +129,8 @@ class GSpreadsheet(object):
         return "https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=%s" % (self.key)
 
     def get_worksheets(self):
+        if hasattr(self, 'spreadsheet_name') and hasattr(self, '_worksheets'):
+            return self._worksheets
         # for debugging
         worksheets = self.client.GetWorksheetsFeed(self.key)
         self.spreadsheet_name = worksheets.title.text
