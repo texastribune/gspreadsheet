@@ -61,20 +61,21 @@ def PrintFeed(feed):
 # TODO use collections.MutableMapping as the docs recommend
 class GDataRow(DictMixin):
     """A dict-like object that represents a row of a worksheet"""
-    def __init__(self, entry):
+    def __init__(self, entry, deferred_save=False):
         self._entry = entry
         self._data = dict([(key, entry.custom[key].text) for key in entry.custom])
+        self._defer_save = deferred_save
+        self._changed = False
 
     def __getitem__(self, *args):
         return self._data.__getitem__(*args)
 
     def __setitem__(self, key, value):
-        global gd_client
-        if gd_client is None:
-            # TODO raise a better exception
-            raise Exception("Not Logged In")
-        self._data[key] = value
-        return gd_client.UpdateRow(self._entry, self._data)
+        if self._data.get(key) != value:
+            self._data[key] = value
+            self._changed = True
+        if not self._defer_save:
+            return self.save()
 
     def __delitem__(self, *args):
         raise NameError("Deleting Values Not Allowed")
@@ -85,6 +86,19 @@ class GDataRow(DictMixin):
     def copy(self):
         """Get an ordinary dict of the row"""
         return self._data.copy()
+
+    def save(self):
+        """Save the row back to the spreadsheet"""
+        # FIXME can only do save once
+        if not self._changed:
+            # nothing to save
+            return
+        global gd_client
+        assert gd_client is not None
+        output = gd_client.UpdateRow(self._entry, self._data)
+        # reset `_changed` flag
+        self._changed = False
+        return output
 
 
 class GSpreadsheet(object):
