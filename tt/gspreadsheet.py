@@ -89,16 +89,16 @@ class GDataRow(DictMixin):
 
     def save(self):
         """Save the row back to the spreadsheet"""
-        # FIXME can only do save once
         if not self._changed:
             # nothing to save
             return
         global gd_client
         assert gd_client is not None
-        output = gd_client.UpdateRow(self._entry, self._data)
+        entry = gd_client.UpdateRow(self._entry, self._data)
+        self._entry = entry
         # reset `_changed` flag
         self._changed = False
-        return output
+        return entry
 
 
 class GSpreadsheet(object):
