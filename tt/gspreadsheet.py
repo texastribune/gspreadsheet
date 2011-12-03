@@ -30,6 +30,7 @@ attach original metadata to each row/cell
 let you write back to the spreadsheet
 """
 import re
+from UserDict import DictMixin
 
 from django.conf import settings
 from gdata.spreadsheet.service import SpreadsheetsService
@@ -53,6 +54,25 @@ def PrintFeed(feed):
       print '\n',
     else:
       print '%s %s\n' % (i, entry.title.text)
+
+# TODO use collections.MutableMapping as the docs recommend
+class GDataRow(DictMixin):
+    """A dict-like object that represents a row of a worksheet"""
+    def __init__(self, entry):
+        self._entry = entry
+        self._data = dict([(key, entry.custom[key].text) for key in entry.custom])
+
+    def __getitem__(self, *args):
+        return self._data.__getitem__(*args)
+
+    def __setitem__(self, *args):
+        raise NotImplementedError("Changing Values Not Implemented")
+
+    def __delitem__(self, *args):
+        raise NameError("Deleting Values Not Allowed")
+
+    def keys(self):
+        return self._data.keys()
 
 
 class GSpreadsheet(object):
@@ -160,6 +180,5 @@ class GSpreadsheet(object):
 
     def readrow_as_dict(self):
         for entry in self.feed.entry:
-            row = dict([(key, entry.custom[key].text)
-                        for key in entry.custom])
+            row = GDataRow(entry)
             yield row
