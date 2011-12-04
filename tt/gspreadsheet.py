@@ -80,6 +80,10 @@ class GDataRow(DictMixin):
     def __delitem__(self, *args):
         raise NameError("Deleting Values Not Allowed")
 
+    #def __del__(self):
+    #    self.delete()
+    #    return super(GDataRow, self).__del__()
+
     def keys(self):
         return self._data.keys()
 
@@ -99,6 +103,12 @@ class GDataRow(DictMixin):
         # reset `_changed` flag
         self._changed = False
         return entry
+
+    def delete(self):
+        """Delete the row from the spreadsheet"""
+        global gd_client
+        assert gd_client is not None
+        return gd_client.DeleteRow(self._entry)
 
 
 class GSpreadsheet(object):
