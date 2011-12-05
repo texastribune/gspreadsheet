@@ -143,6 +143,7 @@ class GSpreadsheet(object):
     def connect(self):
         global gd_client
         if gd_client:
+            self.client = gd_client
             return
         gd_client = SpreadsheetsService()
         gd_client.source = "texastribune-ttspreadimporter-1"
