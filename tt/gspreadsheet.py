@@ -34,7 +34,7 @@ from UserDict import DictMixin
 
 from django.conf import settings
 from gdata.spreadsheet.service import SpreadsheetsService
-
+from gdata.service import RequestError
 
 # cache client between uses
 gd_client = None
@@ -98,7 +98,14 @@ class GDataRow(DictMixin):
             return
         global gd_client
         assert gd_client is not None
-        entry = gd_client.UpdateRow(self._entry, self._data)
+        try:
+            entry = gd_client.UpdateRow(self._entry, self._data)
+        except RequestError as e:
+            if e.status == 409:
+                # conflict
+                raise
+            else:
+                raise
         self._entry = entry
         # reset `_changed` flag
         self._changed = False
