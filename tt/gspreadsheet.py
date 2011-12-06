@@ -14,20 +14,36 @@ Get a spreadsheet if you just know the url:
     sheet = GSpreadsheet(url="https://docs.google.com/a/texastribune.org/spreadsheet/"
                              "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
 
+Since just knowing the url is the most common use case, specifying it as a
+kwarg is optional. Just pass whatever url is in your browser as the first arg.
+
+    sheet = GSpreadsheet("https://docs.google.com/a/texastribune.org/spreadsheet/"
+                         "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
+
+Google will also complain if you're anonymous. Best specify some credentials.
 Get a spreadsheet as a certain user:
 
     sheet = GSpreadsheet(email="foo@example.com", password="12345",
                          key='tuTazWC8sZ_r0cddKj8qfFg', worksheet="od6")
 
+Then iterate over each row.
+
     for row in sheet:
         print row
+        if row['deleteme']:
+            row.delete()  # delete the row from the worksheet
+        row['hash'] = md5(row['name'])  # compute the hash and save it back
 
+    data = row.copy()   # get the last row as a plain dict
+    sheet.add_row(data)  # copy the last row and append it back to the sheet
 
 Future Plans/TODOs:
 -------------------
 Let you address by cells
-attach original metadata to each row/cell
-let you write back to the spreadsheet
+Let you authenticate multiple times (it's cached so you can only authenticate once)
+Separate from Django
+Tests
+
 """
 import re
 from UserDict import DictMixin
