@@ -111,7 +111,6 @@ class GDataRow(DictMixin):
         if not self._changed:
             # nothing to save
             return
-        global gd_client
         assert gd_client is not None
         try:
             entry = gd_client.UpdateRow(self._entry, self._data)
@@ -128,7 +127,6 @@ class GDataRow(DictMixin):
 
     def delete(self):
         """Delete the row from the spreadsheet"""
-        global gd_client
         assert gd_client is not None
         return gd_client.DeleteRow(self._entry)
 
