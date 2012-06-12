@@ -11,13 +11,13 @@ Get a spreadsheet if you know the key and worksheet:
 
 Get a spreadsheet if you just know the url:
 
-    sheet = GSpreadsheet(url="https://docs.google.com/a/texastribune.org/spreadsheet/"
+    sheet = GSpreadsheet(url="https://docs.google.com/spreadsheet/"
                              "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
 
 Since just knowing the url is the most common use case, specifying it as a
 kwarg is optional. Just pass whatever url is in your browser as the first arg.
 
-    sheet = GSpreadsheet("https://docs.google.com/a/texastribune.org/spreadsheet/"
+    sheet = GSpreadsheet("https://docs.google.com/spreadsheet/"
                          "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
 
 Google will also complain if you're anonymous. Best specify some credentials.
@@ -41,14 +41,12 @@ Future Plans/TODOs:
 -------------------
 Let you address by cells
 Let you authenticate multiple times (it's cached so you can only authenticate once)
-Separate from Django
 Tests
 
 """
 import re
 from UserDict import DictMixin
 
-from django.conf import settings
 from gdata.spreadsheet.service import SpreadsheetsService
 from gdata.service import RequestError
 
@@ -74,8 +72,9 @@ def PrintFeed(feed):
     else:
       print '%s %s\n' % (i, entry.title.text)
 
-# TODO use collections.MutableMapping as the docs recommend
+
 class GDataRow(DictMixin):
+    # TODO use collections.MutableMapping as the docs recommend
     """A dict-like object that represents a row of a worksheet"""
     def __init__(self, entry, deferred_save=False):
         self._entry = entry
@@ -156,7 +155,7 @@ class GSpreadsheet(object):
             # TODO parse worksheet from url, should not overwrite if none specified
             #self.worksheet = None
             try:
-                self.key = re.search(r'key=([0-9a-zA-Z\-]+)',url).group(1)
+                self.key = re.search(r'key=([0-9a-zA-Z\-]+)', url).group(1)
             except (AttributeError, IndexError):
                 # TODO raise ImproperlyConfigured
                 print "! not a valid url:", url
@@ -172,14 +171,8 @@ class GSpreadsheet(object):
         gd_client.source = "texastribune-ttspreadimporter-1"
 
         # login
-        if hasattr(settings, 'GOOGLE_DATA_ACCOUNT'):
-            user_email = settings.GOOGLE_DATA_ACCOUNT['username']
-            user_password = settings.GOOGLE_DATA_ACCOUNT['password']
-            email = self.email or user_email
-            password = self.password or user_password
-        else:
-            email = self.email
-            password = self.password
+        email = self.email
+        password = self.password
         if email and password:
             gd_client.ClientLogin(email, password)
 
@@ -209,7 +202,7 @@ class GSpreadsheet(object):
 
     def get_absolute_url(self):
         # TODO there's a better way hidden in gdata
-        return "https://docs.google.com/a/texastribune.org/spreadsheet/ccc?key=%s" % (self.key)
+        return ""
 
     def get_worksheets(self):
         if hasattr(self, 'spreadsheet_name') and hasattr(self, '_worksheets'):
