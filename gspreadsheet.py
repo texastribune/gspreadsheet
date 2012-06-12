@@ -157,7 +157,17 @@ class GSpreadsheet(object):
             except (AttributeError, IndexError):
                 # TODO raise ImproperlyConfigured
                 print "! not a valid url:", url
+
         self.connect()
+
+        if url is not None:
+            try:
+                worksheet_index = int(re.search(r'#gid=(\d+)', url).group(1))
+                worksheets = self.list_worksheets()
+                self.worksheet = worksheets[worksheet_index][0]
+            except (AttributeError, IndexError):
+                pass
+
         self.get_feed()
 
     def connect(self):
