@@ -44,6 +44,8 @@ Let you authenticate multiple times (it's cached so you can only authenticate on
 Tests
 
 """
+__all__ = ['GSpreadsheet']
+
 import re
 from UserDict import DictMixin
 
