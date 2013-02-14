@@ -1,9 +1,12 @@
 """
-A wrapper around a wrapper to get Google spreadsheets look like DictReader
+A wrapper around a wrapper to get Google spreadsheets look like csv.DictReader
 
 
 Usage:
 ------
+Add this import:
+
+    from gspreadheet import GSpreadsheet
 
 Get a spreadsheet if you know the key and worksheet:
 
@@ -239,7 +242,6 @@ class GSpreadsheet(object):
     def __iter__(self):
         return self.readrow_as_dict()
 
-    # FIXME
     def next(self):
         out = self.readrow_as_dict().next()
         return out
