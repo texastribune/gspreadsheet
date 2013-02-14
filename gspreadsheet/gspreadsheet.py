@@ -141,7 +141,7 @@ class GSpreadsheet(object):
                 print "! not a valid url:", url
                 raise
 
-        self.connect()
+        self.client = self.get_client()
 
         # Now look for the worksheet
         if url is not None:
@@ -154,21 +154,17 @@ class GSpreadsheet(object):
 
         self.get_feed()
 
-    def connect(self):
+    def get_client(self):
+        """Get the google data client."""
         global gd_client
         if gd_client:
-            self.client = gd_client
-            return
+            return gd_client
+
         gd_client = SpreadsheetsService()
         gd_client.source = "texastribune-ttspreadimporter-1"
-
-        # login
-        email = self.email
-        password = self.password
-        if email and password:
-            gd_client.ClientLogin(email, password)
-
-        self.client = gd_client
+        if self.email and self.password:
+            gd_client.ClientLogin(self.email, self.password)
+        return gd_client
 
     def get_feed(self):
         if self.worksheet:
