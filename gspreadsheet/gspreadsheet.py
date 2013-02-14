@@ -49,12 +49,14 @@ Tests
 """
 __all__ = ['GSpreadsheet']
 
-import re
 from UserDict import DictMixin
+import logging
+import re
 
 from gdata.spreadsheet.service import SpreadsheetsService
 from gdata.service import RequestError
 
+logger = logging.getLogger(__name__)
 # cache client between uses
 gd_client = None
 
