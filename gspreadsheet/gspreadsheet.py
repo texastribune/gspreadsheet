@@ -130,9 +130,6 @@ class GSpreadsheet(object):
 
     def __init__(self, url=None, **kwargs):
         for key, value in kwargs.items():
-            # allow username as an alias to email
-            if key == "username":
-                key = "email"
             if hasattr(self, key) and key[0] != "_":
                 setattr(self, key, value)
             else:
