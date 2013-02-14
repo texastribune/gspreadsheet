@@ -129,25 +129,21 @@ class GSpreadsheet(object):
     worksheet = None    # your worksheet id
 
     def __init__(self, url=None, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key) and key[0] != "_":
-                setattr(self, key, value)
-            else:
-                # TODO raise ImproperlyConfigured
-                print "!", key, "not a valid thingy"
+        for key, value in kwargs.iteritems():
+            setattr(self, key, value)
 
+        # Get key from url
         if url is not None:
-            self.key = None
-            # TODO parse worksheet from url, should not overwrite if none specified
-            #self.worksheet = None
             try:
                 self.key = re.search(r'key=([0-9a-zA-Z\-]+)', url).group(1)
             except (AttributeError, IndexError):
                 # TODO raise ImproperlyConfigured
                 print "! not a valid url:", url
+                raise
 
         self.connect()
 
+        # Now look for the worksheet
         if url is not None:
             try:
                 worksheet_index = int(re.search(r'#gid=(\d+)', url).group(1))
