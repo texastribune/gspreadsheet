@@ -178,13 +178,13 @@ class GSpreadsheet(object):
         self.client = gd_client
 
     def get_feed(self):
-        if not self.worksheet:
+        if self.worksheet:
+            self.feed = self.client.GetListFeed(self.key, self.worksheet)
+        else:
             # print missing worksheet, falling back
             # or choose a worksheet
             # self.get_worksheets()
             self.feed = self.client.GetListFeed(self.key)
-        else:
-            self.feed = self.client.GetListFeed(self.key, self.worksheet)
         return self.feed
 
     def __unicode__(self):
