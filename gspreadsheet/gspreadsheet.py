@@ -53,9 +53,9 @@ import logging
 import re
 import os
 
-from gdata.spreadsheet.service import SpreadsheetsService
 from gdata.service import RequestError
 
+from .auth import Auth
 # from .utils import PrintFeed
 
 
@@ -128,6 +128,7 @@ class GDataRow(DictMixin):
 
 
 class GSpreadsheet(object):
+    client = None
     email = None
     password = None
     key = None  # your spreadsheet key
@@ -151,7 +152,6 @@ class GSpreadsheet(object):
             self.email = os.environ.get('GO_EMAIL')
         if self.password is None:
             self.password = os.environ.get('GO_PASS')
-
         self.client = self.get_client()
 
         # Now look for the worksheet
@@ -167,14 +167,9 @@ class GSpreadsheet(object):
 
     def get_client(self):
         """Get the google data client."""
-        if hasattr(self, 'client'):
+        if self.client is not None:
             return self.client
-
-        gd_client = SpreadsheetsService()
-        gd_client.source = "texastribune-ttspreadimporter-1"
-        if self.email and self.password:
-            gd_client.ClientLogin(self.email, self.password)
-        return gd_client
+        return Auth(self.email, self.password)
 
     def get_feed(self):
         if self.worksheet:
