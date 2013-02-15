@@ -1,2 +1,2 @@
-gdata==2.0.17
+gdata>=2.0.14
 ipython
