@@ -1,2 +1,4 @@
 gdata>=2.0.14
 ipython
+ipdb
+nose
