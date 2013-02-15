@@ -68,11 +68,12 @@ gd_client = None
 class GDataRow(DictMixin):
     # TODO use collections.MutableMapping as the docs recommend
     """A dict-like object that represents a row of a worksheet"""
-    def __init__(self, entry, deferred_save=False):
+    def __init__(self, entry, sheet, deferred_save=False):
         self._entry = entry
         self._data = dict([(key, entry.custom[key].text) for key in entry.custom])
         self._defer_save = deferred_save
         self._changed = False
+        self._sheet = sheet
 
     def __getitem__(self, *args):
         return self._data.__getitem__(*args)
@@ -238,7 +239,7 @@ class GSpreadsheet(object):
 
     def readrow_as_dict(self):
         for entry in self.feed.entry:
-            row = GDataRow(entry)
+            row = GDataRow(entry, sheet=self)
             yield row
 
     def add_row(self, row_dict):
@@ -249,4 +250,4 @@ class GSpreadsheet(object):
         else:
             entry = self.client.InsertRow(row_dict, self.key)
         self.feed.entry.append(entry)
-        return GDataRow(entry)
+        return GDataRow(entry, sheet=self)
