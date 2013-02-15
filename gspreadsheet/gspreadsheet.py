@@ -107,7 +107,8 @@ class GDataRow(DictMixin):
         try:
             entry = gd_client.UpdateRow(self._entry, self._data)
         except RequestError as e:
-            if e.status == 409:
+            error_data = e.args[0]
+            if error_data.status == 409:
                 # conflict
                 raise
             else:
