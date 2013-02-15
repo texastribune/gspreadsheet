@@ -179,6 +179,9 @@ class GSpreadsheet(object):
             # or choose a worksheet
             # self.get_worksheets()
             self.feed = self.client.GetListFeed(self.key)
+            __, key, worksheet, visibility, projection = self.feed.id.text.rsplit('/', 4)[6]
+            assert key == self.key
+            self.worksheet = worksheet
         return self.feed
 
     def __unicode__(self):
@@ -239,9 +242,6 @@ class GSpreadsheet(object):
     def add_row(self, row_dict):
         """Add a row to the spreadsheet, returns the new row"""
         # TODO validate row_dict.keys() match
-        if self.worksheet:
-            entry = self.client.InsertRow(row_dict, self.key, self.worksheet)
-        else:
-            entry = self.client.InsertRow(row_dict, self.key)
+        entry = self.client.InsertRow(row_dict, self.key, self.worksheet)
         self.feed.entry.append(entry)
         return GDataRow(entry, sheet=self)
