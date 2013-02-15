@@ -43,7 +43,6 @@ Then iterate over each row.
 Future Plans/TODOs:
 -------------------
 Let you address by cells
-Let you authenticate multiple times (it's cached so you can only authenticate once)
 Tests
 
 """
@@ -61,8 +60,6 @@ from gdata.service import RequestError
 
 
 logger = logging.getLogger(__name__)
-# cache client between uses
-gd_client = None
 
 
 class GDataRow(DictMixin):
@@ -104,6 +101,7 @@ class GDataRow(DictMixin):
         if not self._changed:
             # nothing to save
             return
+        gd_client = self._sheet.client
         assert gd_client is not None
         try:
             entry = gd_client.UpdateRow(self._entry, self._data)
@@ -124,6 +122,7 @@ class GDataRow(DictMixin):
 
     def delete(self):
         """Delete the row from the spreadsheet"""
+        gd_client = self._sheet.client
         assert gd_client is not None
         return gd_client.DeleteRow(self._entry)
 
@@ -168,9 +167,8 @@ class GSpreadsheet(object):
 
     def get_client(self):
         """Get the google data client."""
-        global gd_client
-        if gd_client:
-            return gd_client
+        if hasattr(self, 'client'):
+            return self.client
 
         gd_client = SpreadsheetsService()
         gd_client.source = "texastribune-ttspreadimporter-1"
