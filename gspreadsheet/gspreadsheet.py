@@ -225,8 +225,12 @@ class GSpreadsheet(object):
         return self.readrow_as_dict()
 
     def next(self):
-        out = self.readrow_as_dict().next()
-        return out
+        """Retrieve the next row."""
+        # I'm pretty sure this is the completely wrong way to go about this, but
+        # oh well, this works/
+        if not hasattr(self, '_iter'):
+            self._iter = self.readrow_as_dict()
+        return self._iter.next()
 
     def readrow_as_dict(self):
         for entry in self.feed.entry:
