@@ -108,6 +108,9 @@ class GDataRow(DictMixin):
             entry = gd_client.UpdateRow(self._entry, self._data)
         except RequestError as e:
             error_data = e.args[0]
+            if error_data.status == 403:
+                #  Forbidden
+                raise
             if error_data.status == 409:
                 # conflict
                 raise
