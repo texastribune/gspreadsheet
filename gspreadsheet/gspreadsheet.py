@@ -52,6 +52,7 @@ __all__ = ['GSpreadsheet']
 from UserDict import DictMixin
 import logging
 import re
+import os
 
 from gdata.spreadsheet.service import SpreadsheetsService
 from gdata.service import RequestError
@@ -140,6 +141,12 @@ class GSpreadsheet(object):
                 # TODO raise ImproperlyConfigured
                 print "! not a valid url:", url
                 raise
+
+        # DELETEME grab email as pass from environ
+        if self.email is None:
+            self.email = os.environ.get('GO_EMAIL')
+        if self.password is None:
+            self.password = os.environ.get('GO_PASS')
 
         self.client = self.get_client()
 
