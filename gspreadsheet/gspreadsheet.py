@@ -194,8 +194,9 @@ class GSpreadsheet(object):
         return self.__unicode__()
 
     def get_absolute_url(self):
-        # TODO there's a better way hidden in gdata
-        return ""
+        """Get the link to browse to this spreadsheet."""
+        # Can you tell I'm a Django programmer?
+        return self.feed.GetHtmlLink().href
 
     def get_worksheets(self):
         if hasattr(self, 'spreadsheet_name') and hasattr(self, '_worksheets'):
