@@ -43,7 +43,6 @@ Then iterate over each row.
 Future Plans/TODOs:
 -------------------
 Let you address by cells
-Tests
 
 """
 __all__ = ['GSpreadsheet']
