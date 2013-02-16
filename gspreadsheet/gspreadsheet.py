@@ -187,7 +187,7 @@ class GSpreadsheet(object):
             except (AttributeError, IndexError):
                 pass
 
-        self.get_feed()
+        self.feed = self.get_feed()
 
     def get_client(self):
         """Get the google data client."""
@@ -197,16 +197,16 @@ class GSpreadsheet(object):
 
     def get_feed(self):
         if self.worksheet:
-            self.feed = self.client.GetListFeed(self.key, self.worksheet)
+            feed = self.client.GetListFeed(self.key, self.worksheet)
         else:
             # print missing worksheet, falling back
             # or choose a worksheet
             # self.get_worksheets()
-            self.feed = self.client.GetListFeed(self.key)
+            feed = self.client.GetListFeed(self.key)
             __, key, worksheet, visibility, projection = self.feed.id.text.rsplit('/', 4)[6]
             assert key == self.key
             self.worksheet = worksheet
-        return self.feed
+        return feed
 
     def __unicode__(self):
         if hasattr(self, 'spreadsheet_name'):
