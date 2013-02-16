@@ -13,6 +13,7 @@ from .auth import Auth
 
 
 TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE#gid=0"
+WRITABLE_TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE#gid=1"
 
 
 class AuthTests(TestCase):
@@ -67,3 +68,9 @@ class Basics(TestCase):
         from copy import copy
         self.assertEqual(type(copy(row)), dict)
         self.assertEqual(type(row.copy()), dict)
+
+    def test_can_append_row(self):
+        import datetime
+        sheet = GSpreadsheet(WRITABLE_TEST_URL)
+        sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
+            value="0"))

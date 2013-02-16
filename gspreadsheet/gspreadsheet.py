@@ -264,7 +264,7 @@ class GSpreadsheet(object):
             row = GDataRow(entry, sheet=self)
             yield row
 
-    def add_row(self, row_dict):
+    def append(self, row_dict):
         """Add a row to the spreadsheet, returns the new row"""
         # TODO validate row_dict.keys() match
         entry = self.client.InsertRow(row_dict, self.key, self.worksheet)
