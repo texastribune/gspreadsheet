@@ -188,6 +188,7 @@ class GSpreadsheet(object):
                 pass
 
         self.feed = self.get_feed()
+        self.fieldnames = self.feed.entry[0].custom.keys()
 
     def get_client(self):
         """Get the google data client."""

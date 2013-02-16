@@ -47,6 +47,11 @@ class Basics(TestCase):
 
         # continue in the same test to avoid making a new connection :(
 
+        # test_fieldnames_exist_and_are_accurate(self):
+        # assertListEqual requires python>=2.7
+        self.assertListEqual(sorted(sheet.fieldnames),
+            sorted(['name', 'widgets', 'date', 'price']))
+
         # test_can_mark_row_as_readonly(self):
         sheet.readonly = True
         with self.assertRaises(ReadOnlyException):
