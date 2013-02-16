@@ -8,7 +8,7 @@ results of these tests with a grain of salt.
 """
 from unittest import TestCase, skip
 
-from .gspreadsheet import GSpreadsheet
+from .gspreadsheet import GSpreadsheet, ReadOnlyException
 from .auth import Auth
 
 
@@ -44,3 +44,16 @@ class Basics(TestCase):
         self.assertEqual(row['name'], 'A')
         row = sheet.next()
         self.assertEqual(row['name'], 'B')
+
+        # continue in the same test to avoid making a new connection :(
+
+        # test_can_mark_row_as_readonly(self):
+        sheet.readonly = True
+        with self.assertRaises(ReadOnlyException):
+            row['name'] = 'C'
+
+        with self.assertRaises(ReadOnlyException):
+            row.save()
+
+        with self.assertRaises(ReadOnlyException):
+            row.delete()

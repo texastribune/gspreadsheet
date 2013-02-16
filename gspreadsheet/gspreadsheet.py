@@ -61,6 +61,15 @@ from .auth import Auth
 logger = logging.getLogger(__name__)
 
 
+class BaseException(Exception):
+    pass
+
+
+class ReadOnlyException(BaseException):
+    """Attempted to write to a read only sheet."""
+    pass
+
+
 class GDataRow(DictMixin):
     # TODO use collections.MutableMapping as the docs recommend
     """A dict-like object that represents a row of a worksheet"""
@@ -97,6 +106,8 @@ class GDataRow(DictMixin):
 
     def save(self):
         """Save the row back to the spreadsheet"""
+        if self._sheet.readonly:
+            raise ReadOnlyException
         if not self._changed:
             # nothing to save
             return
@@ -121,17 +132,26 @@ class GDataRow(DictMixin):
 
     def delete(self):
         """Delete the row from the spreadsheet"""
+        if self._sheet.readonly:
+            raise ReadOnlyException
         gd_client = self._sheet.client
         assert gd_client is not None
         return gd_client.DeleteRow(self._entry)
 
 
 class GSpreadsheet(object):
+    """
+    A Google spreadsheet.
+
+    Parameters:
+      readonly -  default: True
+    """
     client = None
     email = None
     password = None
     key = None  # your spreadsheet key
     worksheet = None    # your worksheet id
+    readonly = False
 
     def __init__(self, url=None, **kwargs):
         for key, value in kwargs.iteritems():
