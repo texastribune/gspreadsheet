@@ -75,7 +75,8 @@ class GDataRow(DictMixin):
     """A dict-like object that represents a row of a worksheet"""
     def __init__(self, entry, sheet, deferred_save=False):
         self._entry = entry
-        self._data = dict([(key, entry.custom[key].text) for key in entry.custom])
+        self._data = dict([(key, value.text) for key, value in
+            entry.custom.iteritems()])
         self._defer_save = deferred_save
         self._changed = False
         self._sheet = sheet
