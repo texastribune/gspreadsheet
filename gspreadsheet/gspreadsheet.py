@@ -45,7 +45,7 @@ Future Plans/TODOs:
 Let you address by cells
 
 """
-__all__ = ['GSpreadsheet']
+__all__ = ["GSpreadsheet", "ReadOnlyException"]
 
 from UserDict import DictMixin
 import logging
