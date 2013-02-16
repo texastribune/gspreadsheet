@@ -57,3 +57,8 @@ class Basics(TestCase):
 
         with self.assertRaises(ReadOnlyException):
             row.delete()
+
+        # test_copy_of_row_is_dict(self):
+        from copy import copy
+        self.assertEqual(type(copy(row)), dict)
+        self.assertEqual(type(row.copy()), dict)

@@ -93,6 +93,10 @@ class GDataRow(DictMixin):
     def __delitem__(self, *args):
         raise NameError("Deleting Values Not Allowed")
 
+    def __copy__(self):
+        """Get an ordinary dict of the row"""
+        return self._data.copy()
+
     #def __del__(self):
     #    self.delete()
     #    return super(GDataRow, self).__del__()
@@ -102,7 +106,7 @@ class GDataRow(DictMixin):
 
     def copy(self):
         """Get an ordinary dict of the row"""
-        return self._data.copy()
+        return self.__copy__()
 
     def save(self):
         """Save the row back to the spreadsheet"""
