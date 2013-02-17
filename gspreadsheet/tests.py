@@ -13,6 +13,7 @@ from .auth import Auth
 
 
 KEY = "0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE"
+WORKSHEET = 'od6'
 TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=0" % KEY
 WRITABLE_TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=1" % KEY
 
@@ -36,20 +37,28 @@ class AuthTests(TestCase):
 class Basics(TestCase):
     def test_can_connect_and_iterate_using_url(self):
         sheet = GSpreadsheet(TEST_URL)
+        self.assertEqual(sheet.worksheet, WORKSHEET)
+        names = ['A', 'B']
+        for i, row in enumerate(sheet):
+            self.assertEqual(row['name'], names[i])
+
+    def test_can_connect_and_iterate_using_url_no_gid(self):
+        sheet = GSpreadsheet(TEST_URL.split("#")[0])
+        self.assertEqual(sheet.worksheet, 'default')
         names = ['A', 'B']
         for i, row in enumerate(sheet):
             self.assertEqual(row['name'], names[i])
 
     def test_can_connect_and_iterate_using_key(self):
         sheet = GSpreadsheet(key=KEY)
-        self.assertEqual(sheet.worksheet, 'od6')
+        self.assertEqual(sheet.worksheet, 'default')
         names = ['A', 'B']
         for i, row in enumerate(sheet):
             self.assertEqual(row['name'], names[i])
 
     def test_can_connect_and_iterate_using_key_and_worksheet(self):
-        sheet = GSpreadsheet(key=KEY, worksheet='od6')
-        self.assertEqual(sheet.worksheet, 'od6')
+        sheet = GSpreadsheet(key=KEY, worksheet=WORKSHEET)
+        self.assertEqual(sheet.worksheet, WORKSHEET)
         names = ['A', 'B']
         for i, row in enumerate(sheet):
             self.assertEqual(row['name'], names[i])

@@ -155,7 +155,7 @@ class GSpreadsheet(object):
     email = None
     password = None
     key = None  # your spreadsheet key
-    worksheet = None    # your worksheet id
+    worksheet = 'default'  # The worksheet's id (e.g. 'od6', 'od7') or 'default'
     readonly = False
 
     def __init__(self, url=None, **kwargs):
@@ -179,13 +179,13 @@ class GSpreadsheet(object):
         self.client = self.get_client()
 
         # Now look for the worksheet
-        if not self.worksheet:
+        if url is not None:
             try:
                 worksheet_index = int(re.search(r'#gid=(\d+)', url).group(1))
-            except (AttributeError, IndexError, TypeError):
-                worksheet_index = 0
-            worksheets = self.list_worksheets()
-            self.worksheet = worksheets[worksheet_index][0]
+                worksheets = self.list_worksheets()
+                self.worksheet = worksheets[worksheet_index][0]
+            except (AttributeError, IndexError):
+                pass
 
         self.feed = self.get_feed()
         self.fieldnames = self.feed.entry[0].custom.keys()
