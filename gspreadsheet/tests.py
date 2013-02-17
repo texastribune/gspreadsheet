@@ -12,8 +12,9 @@ from .gspreadsheet import GSpreadsheet, ReadOnlyException
 from .auth import Auth
 
 
-TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE#gid=0"
-WRITABLE_TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE#gid=1"
+KEY = "0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE"
+TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=0" % KEY
+WRITABLE_TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=1" % KEY
 
 
 class AuthTests(TestCase):
@@ -33,8 +34,22 @@ class AuthTests(TestCase):
 
 
 class Basics(TestCase):
-    def test_can_connect_and_iterate(self):
+    def test_can_connect_and_iterate_using_url(self):
         sheet = GSpreadsheet(TEST_URL)
+        names = ['A', 'B']
+        for i, row in enumerate(sheet):
+            self.assertEqual(row['name'], names[i])
+
+    def test_can_connect_and_iterate_using_key(self):
+        sheet = GSpreadsheet(key=KEY)
+        self.assertEqual(sheet.worksheet, 'od6')
+        names = ['A', 'B']
+        for i, row in enumerate(sheet):
+            self.assertEqual(row['name'], names[i])
+
+    def test_can_connect_and_iterate_using_key_and_worksheet(self):
+        sheet = GSpreadsheet(key=KEY, worksheet='od6')
+        self.assertEqual(sheet.worksheet, 'od6')
         names = ['A', 'B']
         for i, row in enumerate(sheet):
             self.assertEqual(row['name'], names[i])

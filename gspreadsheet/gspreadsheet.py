@@ -179,13 +179,13 @@ class GSpreadsheet(object):
         self.client = self.get_client()
 
         # Now look for the worksheet
-        if url is not None:
+        if not self.worksheet:
             try:
                 worksheet_index = int(re.search(r'#gid=(\d+)', url).group(1))
-                worksheets = self.list_worksheets()
-                self.worksheet = worksheets[worksheet_index][0]
-            except (AttributeError, IndexError):
-                pass
+            except (AttributeError, IndexError, TypeError):
+                worksheet_index = 0
+            worksheets = self.list_worksheets()
+            self.worksheet = worksheets[worksheet_index][0]
 
         self.feed = self.get_feed()
         self.fieldnames = self.feed.entry[0].custom.keys()
@@ -197,17 +197,7 @@ class GSpreadsheet(object):
         return Auth(self.email, self.password)
 
     def get_feed(self):
-        if self.worksheet:
-            feed = self.client.GetListFeed(self.key, self.worksheet)
-        else:
-            # print missing worksheet, falling back
-            # or choose a worksheet
-            # self.get_worksheets()
-            feed = self.client.GetListFeed(self.key)
-            __, key, worksheet, visibility, projection = self.feed.id.text.rsplit('/', 4)[6]
-            assert key == self.key
-            self.worksheet = worksheet
-        return feed
+        return self.client.GetListFeed(self.key, self.worksheet)
 
     def __unicode__(self):
         if hasattr(self, 'spreadsheet_name'):
