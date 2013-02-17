@@ -11,7 +11,6 @@ from unittest import TestCase, skip
 from .gspreadsheet import GSpreadsheet, ReadOnlyException
 from .auth import Auth
 
-
 KEY = "0AvtWFMTdBQSLdFI3Y2M0RnI5OTBMa2FydXNFelBDTUE"
 WORKSHEET = 'od6'
 TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=0" % KEY
@@ -95,6 +94,8 @@ class Basics(TestCase):
 
     def test_can_append_row(self):
         import datetime
+        from . import __version__ as VERSION
+
         sheet = GSpreadsheet(WRITABLE_TEST_URL)
         sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
-            value="0"))
+            value=str(VERSION)))
