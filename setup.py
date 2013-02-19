@@ -1,11 +1,11 @@
-from distutils.core import setup
+from setuptools import setup
 
 import gspreadsheet as app
 
 setup(
     name=app.__name__,
     version=app.__version__,
-    description=app.__doc__.split("\n")[1],
+    description=app.__doc__.strip().splitlines()[0],
     author='The Texas Tribune',
     author_email='cchang@texastribune.org',
     url='http://github.com/crccheck/gspreadsheet/',  # TODO
