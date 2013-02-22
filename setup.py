@@ -1,13 +1,12 @@
 from setuptools import setup
 
-import gspreadsheet as app
-
 setup(
-    name=app.__name__,
-    version=app.__version__,
-    description=app.__doc__.strip().splitlines()[0],
+    name="gspreadsheet",
+    version="0.1.0",
+    description="Google Spreadsheets the easy way",
     author='The Texas Tribune',
     author_email='cchang@texastribune.org',
+    maintainer="Chris Chang",
     url='http://github.com/crccheck/gspreadsheet/',  # TODO
     license='Apache Software License',
     install_requires=[
