@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name="gspreadsheet",
-    version="0.1.1",
+    version="0.1.2",
     description="Google Spreadsheets the easy way",
     long_description=long_description,
     author='The Texas Tribune',
