@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="gspreadsheet",
-    version="0.1.0",
+    version="0.1.1",
     description="Google Spreadsheets the easy way",
     author='The Texas Tribune',
     author_email='cchang@texastribune.org',
