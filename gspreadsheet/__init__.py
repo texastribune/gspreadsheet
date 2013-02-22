@@ -1,5 +1,5 @@
 """
-Google Spreadsheets the easy way.
+A wrapper around a wrapper to get Google spreadsheets to look like DictReader.
 
 Classes:
   GSpreadsheet

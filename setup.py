@@ -1,9 +1,13 @@
 from setuptools import setup
 
+with open('README.rst') as f:
+    long_description = f.read()
+
 setup(
     name="gspreadsheet",
     version="0.1.1",
     description="Google Spreadsheets the easy way",
+    long_description=long_description,
     author='The Texas Tribune',
     author_email='cchang@texastribune.org',
     maintainer="Chris Chang",
