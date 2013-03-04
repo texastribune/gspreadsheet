@@ -77,7 +77,8 @@ Scary Warnings
 
 I really want to say this is alpha software, but we've been using bits and
 pieces of this for over a year now. Everything is subject to change, even the
-names.
+names. This also relies on google's relatively ancient gdata package, which does
+not have support for Python 3.
 
 Similar Python packages
 -----------------------
