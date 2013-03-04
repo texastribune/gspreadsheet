@@ -50,7 +50,6 @@ __all__ = ["GSpreadsheet", "ReadOnlyException"]
 from UserDict import DictMixin
 import logging
 import re
-import os
 
 from gdata.service import RequestError
 
@@ -167,8 +166,6 @@ class GSpreadsheet(object):
     # parameters
     key = None
     worksheet = 'default'
-    email = None
-    password = None
     readonly = False
 
     # state
@@ -177,7 +174,8 @@ class GSpreadsheet(object):
 
     def __init__(self, url=None, **kwargs):
         for key, value in kwargs.iteritems():
-            setattr(self, key, value)
+            if hasattr(self, key):
+                setattr(self, key, value)
 
         # Get key from url
         if url is not None:
@@ -188,12 +186,8 @@ class GSpreadsheet(object):
                 print "! not a valid url:", url
                 raise
 
-        # DELETEME grab email as pass from environ
-        if self.email is None:
-            self.email = os.environ.get('GO_EMAIL')
-        if self.password is None:
-            self.password = os.environ.get('GO_PASS')
-        self.client = self.get_client()
+        self.client = self.get_client(**kwargs)
+        self.is_authed = bool(self.client.current_token)
 
         # Now look for the worksheet
         if url is not None:
@@ -207,18 +201,16 @@ class GSpreadsheet(object):
         self.feed = self.get_feed()
         self.fieldnames = self.feed.entry[0].custom.keys()
 
-    def get_client(self):
+    def get_client(self, email=None, password=None, **__):
         """Get the google data client."""
         if self.client is not None:
-            self.is_authed = bool(self.client.current_token)
             return self.client
-        client = Auth(self.email, self.password)
-        self.is_authed = bool(client.current_token)
-        return client
+        return Auth(email, password)
 
     def get_feed(self):
         return self.client.GetListFeed(self.key, self.worksheet,
             visibility='private' if self.is_authed else 'public',
+            # TODO always use projection='values' ? What does full give me?
             projection='full' if self.is_authed else 'values')
 
     def __unicode__(self):
