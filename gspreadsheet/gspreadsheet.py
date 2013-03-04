@@ -193,11 +193,16 @@ class GSpreadsheet(object):
     def get_client(self):
         """Get the google data client."""
         if self.client is not None:
+            self.is_authed = bool(self.client.current_token)
             return self.client
-        return Auth(self.email, self.password)
+        client = Auth(self.email, self.password)
+        self.is_authed = bool(client.current_token)
+        return client
 
     def get_feed(self):
-        return self.client.GetListFeed(self.key, self.worksheet)
+        return self.client.GetListFeed(self.key, self.worksheet,
+            visibility='private' if self.is_authed else 'public',
+            projection='full' if self.is_authed else 'values')
 
     def __unicode__(self):
         if hasattr(self, 'spreadsheet_name'):
@@ -220,7 +225,9 @@ class GSpreadsheet(object):
         if hasattr(self, 'spreadsheet_name') and hasattr(self, '_worksheets'):
             return self._worksheets
         # for debugging
-        worksheets = self.client.GetWorksheetsFeed(self.key)
+        worksheets = self.client.GetWorksheetsFeed(self.key,
+            visibility='private' if self.is_authed else 'public',
+            projection='full' if self.is_authed else 'values')
         self.spreadsheet_name = worksheets.title.text
         self._worksheets = worksheets
         return worksheets
@@ -257,6 +264,7 @@ class GSpreadsheet(object):
     def append(self, row_dict):
         """Add a row to the spreadsheet, returns the new row"""
         # TODO validate row_dict.keys() match
+        # TODO check self.is_authed
         entry = self.client.InsertRow(row_dict, self.key, self.worksheet)
         self.feed.entry.append(entry)
         return GDataRow(entry, sheet=self)

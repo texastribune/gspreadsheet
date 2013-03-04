@@ -1,9 +1,10 @@
 from gdata.spreadsheet.service import SpreadsheetsService
 
 
-def Auth(email, password):
+def Auth(email=None, password=None):
     """Get a reusable google data client."""
     gd_client = SpreadsheetsService()
     gd_client.source = "texastribune-ttspreadimporter-1"
-    gd_client.ClientLogin(email, password)
+    if email and password:
+        gd_client.ClientLogin(email, password)
     return gd_client

@@ -97,5 +97,6 @@ class Basics(TestCase):
         from . import __version__ as VERSION
 
         sheet = GSpreadsheet(WRITABLE_TEST_URL)
-        sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
-            value=str(VERSION)))
+        if sheet.is_authed:
+            sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
+                value=str(VERSION)))
