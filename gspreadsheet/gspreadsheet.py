@@ -170,8 +170,12 @@ class GSpreadsheet(object):
 
     # state
     client = None  # save auth
+    feed = None  # reference to the original gdata feed
+    fieldnames = []  # list of field names
     is_authed = False  # store whether client is authenticated or anonymous
+    spreadsheet_name = ''  # the doc name.
 
+    # Random meta methods
     def __init__(self, url=None, **kwargs):
         for key, value in kwargs.iteritems():
             if hasattr(self, key):
@@ -201,18 +205,6 @@ class GSpreadsheet(object):
         self.feed = self.get_feed()
         self.fieldnames = self.feed.entry[0].custom.keys()
 
-    def get_client(self, email=None, password=None, **__):
-        """Get the google data client."""
-        if self.client is not None:
-            return self.client
-        return Auth(email, password)
-
-    def get_feed(self):
-        return self.client.GetListFeed(self.key, self.worksheet,
-            visibility='private' if self.is_authed else 'public',
-            # TODO always use projection='values' ? What does full give me?
-            projection='full' if self.is_authed else 'values')
-
     def __unicode__(self):
         if hasattr(self, 'spreadsheet_name'):
             return u"GSpreadsheet: %s (%s)" % (self.spreadsheet_name,
@@ -225,21 +217,34 @@ class GSpreadsheet(object):
     def __repr__(self):
         return self.__unicode__()
 
-    def get_absolute_url(self):
-        """Get the link to browse to this spreadsheet."""
-        # Can you tell I'm a Django programmer?
-        return self.feed.GetHtmlLink().href
+    def get_client(self, email=None, password=None, **__):
+        """Get the google data client."""
+        if self.client is not None:
+            return self.client
+        return Auth(email, password)
+
+    def get_feed(self):
+        """Get the gdata spreadsheet feed."""
+        return self.client.GetListFeed(self.key, self.worksheet,
+            visibility='private' if self.is_authed else 'public',
+            # TODO always use projection='values' ? What does full give me?
+            projection='full' if self.is_authed else 'values')
 
     def get_worksheets(self):
         if hasattr(self, 'spreadsheet_name') and hasattr(self, '_worksheets'):
             return self._worksheets
-        # for debugging
         worksheets = self.client.GetWorksheetsFeed(self.key,
             visibility='private' if self.is_authed else 'public',
             projection='full' if self.is_authed else 'values')
         self.spreadsheet_name = worksheets.title.text
         self._worksheets = worksheets
         return worksheets
+
+    # Utility methods
+    def get_absolute_url(self):
+        """Get the link to browse to this spreadsheet."""
+        # Can you tell I'm a Django programmer?
+        return self.feed.GetHtmlLink().href
 
     def list_worksheets(self):
         """
@@ -250,17 +255,18 @@ class GSpreadsheet(object):
         You can then retrieve the specific WORKSHEET_ID in the future by
         constructing a new GSpreadsheet(worksheet=WORKSHEET_ID, ...)
         """
-        # for debugging
         worksheets = self.get_worksheets()
-        return [(x.link[3].href.split('/')[-1], x.title.text) for x in worksheets.entry]
+        return [(x.link[3].href.split('/')[-1], x.title.text)
+            for x in worksheets.entry]
 
+    # Iterating methods
     def __iter__(self):
         return self.readrow_as_dict()
 
     def next(self):
         """Retrieve the next row."""
         # I'm pretty sure this is the completely wrong way to go about this, but
-        # oh well, this works/
+        # oh well, this works.
         if not hasattr(self, '_iter'):
             self._iter = self.readrow_as_dict()
         return self._iter.next()
@@ -270,6 +276,7 @@ class GSpreadsheet(object):
             row = GDataRow(entry, sheet=self)
             yield row
 
+    # Interactivity methods
     def append(self, row_dict):
         """Add a row to the spreadsheet, returns the new row"""
         # TODO validate row_dict.keys() match
