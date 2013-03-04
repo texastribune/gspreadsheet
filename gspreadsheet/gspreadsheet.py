@@ -146,17 +146,34 @@ class GDataRow(DictMixin):
 
 class GSpreadsheet(object):
     """
-    A Google spreadsheet.
+    Represents a Google spreadsheet an iterable of dicts.
+
+    Example usage:
+
+        sheet = GSpreadsheet(url)
+        for row in sheet:
+            name = row['name']
 
     Parameters:
-      readonly -  default: True
+      url       : The url to the spreadsheet. Specify this or the key.
+      key       : The key to the spreadsheet. Specify this or the url.
+      worksheet : The name of the worksheet, like 'od6' or 'od7'.
+                  (default: 'default')
+      email     : Your account email address.
+      password  : Your account password
+      readonly  : Whether to allow changes to the `GSpreadsheet`, which can
+                  also change the original. (default: False)
     """
-    client = None
+    # parameters
+    key = None
+    worksheet = 'default'
     email = None
     password = None
-    key = None  # your spreadsheet key
-    worksheet = 'default'  # The worksheet's id (e.g. 'od6', 'od7') or 'default'
     readonly = False
+
+    # state
+    client = None  # save auth
+    is_authed = False  # store whether client is authenticated or anonymous
 
     def __init__(self, url=None, **kwargs):
         for key, value in kwargs.iteritems():
