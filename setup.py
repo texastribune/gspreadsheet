@@ -6,12 +6,12 @@ with open('README.rst') as f:
 setup(
     name="gspreadsheet",
     version="0.2.0",
-    description="Google Spreadsheets the easy way",
+    description="A wrapper around a wrapper to get Google spreadsheets to look like DictReader",
     long_description=long_description,
     author='The Texas Tribune',
     author_email='cchang@texastribune.org',
     maintainer="Chris Chang",
-    url='http://github.com/crccheck/gspreadsheet/',  # TODO
+    url='https://github.com/texastribune/gspreadsheet',
     license='Apache Software License',
     install_requires=[
         'gdata>=2.0.14',

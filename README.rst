@@ -24,7 +24,7 @@ Usage
 If your old CSV code looked like this::
 
     from csv import DictReader
-    reader = Dictreader(open('myspreadsheet.csv')
+    reader = DictReader(open('myspreadsheet.csv'))
     for row in reader:
         process(row)
 
