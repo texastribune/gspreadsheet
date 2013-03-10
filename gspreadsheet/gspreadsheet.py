@@ -220,6 +220,9 @@ class GSpreadsheet(object):
     def __repr__(self):
         return self.__unicode__()
 
+    def __len__(self):
+        return len(self.feed.entry)
+
     def get_client(self, email=None, password=None, **__):
         """Get the google data client."""
         if self.client is not None:

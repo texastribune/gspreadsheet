@@ -36,6 +36,9 @@ class Basics(TestCase):
         for i, row in enumerate(sheet):
             self.assertEqual(row['name'], names[i])
 
+        # test_can_get_length_of_sheet
+        self.assertEqual(len(sheet), i + 1)
+
     def test_can_connect_and_iterate_using_url_no_gid(self):
         sheet = GSpreadsheet(TEST_URL.split("#")[0])
         self.assertEqual(sheet.worksheet, 'default')
