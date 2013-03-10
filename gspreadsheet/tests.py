@@ -6,7 +6,8 @@ connect to a live spreadsheet whose contents cannot be guaranteed. So take the
 results of these tests with a grain of salt.
 
 """
-from unittest import TestCase, skip
+from unittest import TestCase, skip, skipIf
+import os
 
 from .gspreadsheet import GSpreadsheet, ReadOnlyException
 from .auth import Auth
@@ -92,11 +93,17 @@ class Basics(TestCase):
         self.assertEqual(type(copy(row)), dict)
         self.assertEqual(type(row.copy()), dict)
 
+
+@skipIf('GOOGLE_ACCOUNT_EMAIL' not in os.environ or
+        'GOOGLE_ACCOUNT_PASSWORD' not in os.environ,
+        'These tests require being logged in')
+class LoggedInTests(TestCase):
     def test_can_append_row(self):
         import datetime
         from . import __version__ as VERSION
 
         sheet = GSpreadsheet(WRITABLE_TEST_URL)
-        if sheet.is_authed:
-            sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
-                value=str(VERSION)))
+
+        self.assertTrue(sheet.is_authed)
+        sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
+            value=str(VERSION)))
