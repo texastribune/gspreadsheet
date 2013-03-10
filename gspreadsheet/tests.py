@@ -105,5 +105,26 @@ class LoggedInTests(TestCase):
         sheet = GSpreadsheet(WRITABLE_TEST_URL)
 
         self.assertTrue(sheet.is_authed)
-        sheet.append(dict(date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
-            value=str(VERSION)))
+        data_to_write = dict(
+            date=datetime.datetime.utcnow().isoformat(' ').split('.')[0],
+            value=str(VERSION),
+        )
+        sheet.append(data_to_write)
+
+    def test_can_defer_saves_and_delete_rows(self):
+        # yeah this is two tests, but the delete is sorta the tests's teardown
+
+        # setup, write a dummy row
+        sheet = GSpreadsheet(WRITABLE_TEST_URL, deferred_save=True)
+
+        data_to_write = dict(
+            date='DELETEME',
+            value='-1',
+        )
+        row = sheet.append(data_to_write)
+        row['value'] = '-2'
+        self.assertTrue(row._defer_save)
+        self.assertEqual(row._entry.custom['value'].text, '-1')
+        row.save()
+        self.assertEqual(row._entry.custom['value'].text, '-2')
+        row.delete()

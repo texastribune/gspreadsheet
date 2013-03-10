@@ -154,19 +154,22 @@ class GSpreadsheet(object):
             name = row['name']
 
     Parameters:
-      url       : The url to the spreadsheet. Specify this or the key.
-      key       : The key to the spreadsheet. Specify this or the url.
-      worksheet : The name of the worksheet, like 'od6' or 'od7'.
-                  (default: 'default')
-      email     : Your account email address.
-      password  : Your account password
-      readonly  : Whether to allow changes to the `GSpreadsheet`, which can
-                  also change the original. (default: False)
+      url           : The url to the spreadsheet. Specify this or the key.
+      key           : The key to the spreadsheet. Specify this or the url.
+      worksheet     : The name of the worksheet, like 'od6' or 'od7'.
+                      (default: 'default')
+      email         : Your account email address.
+      password      : Your account password
+      readonly      : Whether to allow changes to the `GSpreadsheet`, which can
+                      also change the original. (default: False)
+      deferred_save : Defer saves. You have to explicitly call `.save()` to
+                      write the data back to the spreadsheet.
     """
     # parameters
     key = None
     worksheet = 'default'
     readonly = False
+    deferred_save = False
 
     # state
     client = None  # save auth
@@ -273,7 +276,7 @@ class GSpreadsheet(object):
 
     def readrow_as_dict(self):
         for entry in self.feed.entry:
-            row = GDataRow(entry, sheet=self)
+            row = GDataRow(entry, sheet=self, deferred_save=self.deferred_save)
             yield row
 
     # Interactivity methods
@@ -283,4 +286,4 @@ class GSpreadsheet(object):
         # TODO check self.is_authed
         entry = self.client.InsertRow(row_dict, self.key, self.worksheet)
         self.feed.entry.append(entry)
-        return GDataRow(entry, sheet=self)
+        return GDataRow(entry, sheet=self, deferred_save=self.deferred_save)
