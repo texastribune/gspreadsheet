@@ -18,7 +18,7 @@ TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=0" % KEY
 WRITABLE_TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=1" % KEY
 
 
-class AuthTests(TestCase):
+class BasicAuthTests(TestCase):
     def test_can_connect_and_reuse_client(self):
         sheet = GSpreadsheet(TEST_URL)
         self.assertTrue(sheet)
@@ -26,12 +26,6 @@ class AuthTests(TestCase):
         sheet = GSpreadsheet(TEST_URL, client=client)
         self.assertTrue(sheet)
         # TODO assert only one auth was made
-
-    @skip("TODO")
-    def test_can_use_client_created_from_auth(self):
-        client = Auth()
-        sheet = GSpreadsheet(TEST_URL, client=client)
-        self.assertTrue(sheet)
 
 
 class Basics(TestCase):
@@ -98,6 +92,11 @@ class Basics(TestCase):
         'GOOGLE_ACCOUNT_PASSWORD' not in os.environ,
         'These tests require being logged in')
 class LoggedInTests(TestCase):
+    def test_can_use_client_created_from_auth(self):
+        client = Auth()
+        sheet = GSpreadsheet(TEST_URL, client=client)
+        self.assertTrue(sheet)
+
     def test_can_append_row(self):
         import datetime
         from . import __version__ as VERSION
