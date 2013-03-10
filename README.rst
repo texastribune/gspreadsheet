@@ -1,3 +1,4 @@
+============
 gspreadsheet
 ============
 
@@ -52,6 +53,9 @@ is optional. Just pass whatever url is in your browser as the first argument.::
     sheet = GSpreadsheet("https://docs.google.com/spreadsheet/"
                          "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
 
+Authenticating
+""""""""""""""
+
 Get a spreadsheet as a certain user::
 
     sheet = GSpreadsheet(email="foo@example.com", password="12345",
@@ -71,6 +75,36 @@ And as an authenticated user, you can modify the spreadsheet.::
 
     data = row.copy()   # get the last row as a plain dict
     sheet.add_row(data)  # copy the last row and append it back to the sheet
+
+Advanced Usage: Saving data back to the spreadsheet
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+If you modify the dict that represents a row, those changes will get pushed back
+to the spreadsheet::
+
+    >>> row['value']
+    'foo'
+    >>> row['value'] = 'bar'  # Change this value
+    >>> row['value']
+    'bar'
+
+Advanced Usage: Deferring Saves
+"""""""""""""""""""""""""""""""
+
+If you do multiple changes to a row, the script can get very slow because it has
+to make a syncronous request back to the server with every change. To avoid
+this, you can turn on deferred saves by setting ``deferred_save=True`` when
+instantiating a ``GSpreadsheet``. Just remember to ``.save()``::
+
+    sheet = GSpreadsheet(email="foo@example.com", password="12345",
+                         key='tuTazWC8sZ_r0cddKj8qfFg', worksheet="od6",
+                         deferred_save=True)
+
+    row = sheet.next()
+    for key in row.keys():
+        row['key'] = ''
+    row.save()
+
 
 Scary Warnings
 --------------
