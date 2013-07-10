@@ -6,7 +6,11 @@ connect to a live spreadsheet whose contents cannot be guaranteed. So take the
 results of these tests with a grain of salt.
 
 """
-from unittest import TestCase, skip, skipIf
+try:
+    # python2.6 compatibility
+    from unittest2 import TestCase, skipIf
+except ImportError:
+    from unittest import TestCase, skipIf
 import os
 
 from .gspreadsheet import GSpreadsheet, ReadOnlyException
