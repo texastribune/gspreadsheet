@@ -7,6 +7,8 @@ help:
 	@echo "  make todo  - list notes in the code"
 
 clean:
+	find . -name "*.pyc" -delete
+	find . -name ".DS_Store" -delete
 	rm -rf MANIFEST
 	rm -rf build
 	rm -rf dist

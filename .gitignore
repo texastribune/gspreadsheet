@@ -1,6 +1,17 @@
+# Randomly generated files
 *.pyc
+.DS_Store
+.tox
 
-# build
-*.egg-info/
+# User files
+.env
+
+# IDE
+*.sublime-*
+.codeintel
+
+# created during packaging
+*.egg-info
 build/
 dist/
+MANIFEST
