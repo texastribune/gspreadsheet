@@ -2,3 +2,4 @@ gdata>=2.0.14
 ipython
 ipdb
 nose
+tox==1.5.0
