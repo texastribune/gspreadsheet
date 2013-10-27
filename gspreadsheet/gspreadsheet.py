@@ -48,6 +48,7 @@ Let you address by cells
 __all__ = ["GSpreadsheet", "ReadOnlyException"]
 
 from UserDict import DictMixin
+import json
 import logging
 import re
 
@@ -222,6 +223,10 @@ class GSpreadsheet(object):
 
     def __len__(self):
         return len(self.feed.entry)
+
+    def to_JSON(self):
+        """Returns the JSON representation of the spreadsheet."""
+        return json.dumps(list((x.copy() for x in self)))
 
     def get_client(self, email=None, password=None, **__):
         """Get the google data client."""
