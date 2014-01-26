@@ -53,6 +53,11 @@ is optional. Just pass whatever url is in your browser as the first argument.::
     sheet = GSpreadsheet("https://docs.google.com/spreadsheet/"
                          "ccc?key=0AqSs84LBQ21-dFZfblMwUlBPOVpFSmpLd3FGVmFtRVE")
 
+Get the JSON representation of the spreadsheet::
+
+    sheet.to_JSON()
+
+
 Authenticating
 """"""""""""""
 

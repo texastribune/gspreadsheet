@@ -22,6 +22,13 @@ TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=0" % KEY
 WRITABLE_TEST_URL = "https://docs.google.com/spreadsheet/ccc?key=%s#gid=1" % KEY
 
 
+class GSpreadsheetTest(TestCase):
+    def test_to_JSON(self):
+        sheet = GSpreadsheet(TEST_URL)
+        # pretty lame, I know, but it's a start
+        self.assertTrue(sheet.to_JSON())
+
+
 class BasicAuthTests(TestCase):
     def test_can_connect_and_reuse_client(self):
         sheet = GSpreadsheet(TEST_URL)
