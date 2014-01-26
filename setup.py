@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name="gspreadsheet",
-    version="0.3.0",
+    version="0.4.0",
     description="A wrapper around a wrapper to get Google spreadsheets to look like DictReader",
     long_description=long_description,
     author='The Texas Tribune',

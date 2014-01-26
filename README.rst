@@ -119,6 +119,14 @@ pieces of this for over a year now. Everything is subject to change, even the
 names. This also relies on google's relatively ancient gdata package, which does
 not have support for Python 3.
 
+
+Changelog
+---------
+
+* v0.4.0 - Added ``.to_JSON`` method. Added tox coverage.
+
+
+
 Similar Python packages
 -----------------------
 
